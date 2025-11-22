@@ -5,17 +5,35 @@ import { EvidenceCard } from './components/EvidenceCard';
 import { PatientCard } from './components/PatientCard';
 import { AnonymizationPanel } from './components/AnonymizationPanel';
 import { ChatSection } from './components/ChatSection';
+import { AIChatInterface } from './components/AIChatInterface';
 import { MOCK_EVIDENCE, MOCK_PATIENT, MOCK_ANONYMIZATION } from './constants';
-import { Sparkles, ArrowRight } from 'lucide-react';
+import { Sparkles, ArrowRight, Mic } from 'lucide-react';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState('chat');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [chatStartMessage, setChatStartMessage] = useState('');
+  const [homeInputValue, setHomeInputValue] = useState('');
 
   if (!isAuthenticated) {
     return <Auth onLogin={() => setIsAuthenticated(true)} />;
   }
+
+  const handleStartChat = () => {
+    if (homeInputValue.trim()) {
+      setChatStartMessage(homeInputValue);
+      setCurrentView('ai-chat');
+      setHomeInputValue('');
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleStartChat();
+    }
+  };
 
   // Main Content Renderer based on View State
   const renderContent = () => {
@@ -52,6 +70,13 @@ const App: React.FC = () => {
           </div>
         );
 
+      case 'ai-chat':
+        return (
+          <div className="max-w-4xl mx-auto h-full">
+            <AIChatInterface initialMessage={chatStartMessage} />
+          </div>
+        );
+
       default: // 'chat' / Home
         return (
           <div className="max-w-4xl mx-auto flex flex-col h-full">
@@ -80,10 +105,25 @@ const App: React.FC = () => {
                   type="text"
                   className="w-full p-4 text-lg text-gray-700 placeholder-gray-400 focus:outline-none bg-transparent"
                   placeholder="Pregunta sobre un paciente o busca evidencia clínica..."
+                  value={homeInputValue}
+                  onChange={(e) => setHomeInputValue(e.target.value)}
+                  onKeyDown={handleKeyDown}
                 />
-                <button className="p-3 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-colors shadow-md">
-                  <ArrowRight className="w-5 h-5" />
-                </button>
+                <div className="flex items-center gap-2 pr-2">
+                  <button
+                    onClick={() => setIsListening(!isListening)}
+                    className={`p-3 rounded-xl transition-all duration-200 ${isListening ? 'bg-red-100 text-teleton-red animate-pulse' : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'}`}
+                    title="Hablar con SADI"
+                  >
+                    <Mic className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={handleStartChat}
+                    className="p-3 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-colors shadow-md"
+                  >
+                    <ArrowRight className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
               {/* Quick Prompts */}
               <div className="flex flex-wrap justify-center gap-3 mt-4 text-sm text-gray-500">
