@@ -8,6 +8,7 @@ interface SidebarProps {
   onNavigate: (viewId: string) => void;
   isOpen?: boolean;
   onClose?: () => void;
+  onLogout: () => void;
 }
 
 // Custom Teletón Logo SVG
@@ -104,7 +105,7 @@ const FinalTeletonLogo = () => (
   </svg>
 )
 
-export const Sidebar: React.FC<SidebarProps> = ({ currentView, onNavigate, isOpen = false, onClose }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ currentView, onNavigate, isOpen = false, onClose, onLogout }) => {
   return (
     <>
       {/* Mobile Close Button (inside sidebar for easy access) */}
@@ -170,7 +171,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onNavigate, isOpe
 
         {/* User Section (Bottom) */}
         <div className="p-4 border-t border-gray-100">
-          <button className="w-full flex items-center justify-start md:justify-center lg:justify-start p-2 rounded-lg hover:bg-gray-50 text-gray-500 transition-colors">
+          <button
+            onClick={onLogout}
+            className="w-full flex items-center justify-start md:justify-center lg:justify-start p-2 rounded-lg hover:bg-gray-50 text-gray-500 transition-colors"
+          >
             <LogOut className="w-5 h-5" />
             <span className="block md:hidden lg:block ml-3 text-sm font-medium">Cerrar Sesión</span>
           </button>

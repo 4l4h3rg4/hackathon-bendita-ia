@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Sidebar } from './components/Sidebar';
+import { Auth } from './components/Auth';
 import { EvidenceCard } from './components/EvidenceCard';
 import { PatientCard } from './components/PatientCard';
 import { AnonymizationPanel } from './components/AnonymizationPanel';
@@ -9,6 +10,11 @@ import { Sparkles, ArrowRight } from 'lucide-react';
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState('chat');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  if (!isAuthenticated) {
+    return <Auth onLogin={() => setIsAuthenticated(true)} />;
+  }
 
   // Main Content Renderer based on View State
   const renderContent = () => {
@@ -94,7 +100,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#F3F4F6]">
+    <div className="flex h-screen overflow-hidden bg-white">
       {/* Sidebar */}
       <Sidebar
         currentView={currentView}
@@ -104,6 +110,7 @@ const App: React.FC = () => {
         }}
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
+        onLogout={() => setIsAuthenticated(false)}
       />
 
       {/* Overlay for mobile sidebar */}
