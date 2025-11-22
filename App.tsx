@@ -38,19 +38,7 @@ const App: React.FC = () => {
           </div>
         );
 
-      case 'patients':
-        return (
-          <div className="max-w-5xl mx-auto animate-fade-in">
-            <div className="mb-8">
-              <h1 className="text-2xl font-bold text-gray-900">Pacientes en Seguimiento (SIC)</h1>
-              <p className="text-gray-500">Alertas prioritarias y gestión de adherencia.</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <PatientCard data={MOCK_PATIENT} />
-              <PatientCard data={{ ...MOCK_PATIENT, id: '5678', name: "Ana M.", adherenceRate: 92, alerts: [] }} />
-            </div>
-          </div>
-        );
+
 
       default: // 'chat' / Home
         return (
@@ -61,10 +49,6 @@ const App: React.FC = () => {
 
             {/* Hero Section */}
             <div className="text-center mb-10 space-y-4 animate-fade-in-up">
-              <div className="inline-flex items-center justify-center p-1.5 bg-blue-50 rounded-full border border-blue-100 mb-4">
-                <span className="px-3 py-1 bg-white rounded-full text-xs font-semibold text-tech-blue shadow-sm">NUEVO</span>
-                <span className="px-3 text-xs font-medium text-gray-600">Modelo de predicción de adherencia v2.1 activo</span>
-              </div>
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
                 ¿En qué puedo ayudarte hoy, <span className="text-teleton-red">Dr. Castillo</span>?
               </h1>
@@ -103,25 +87,7 @@ const App: React.FC = () => {
               </div>
             </div>
 
-            {/* Simulated Results (Contextual Insights) */}
-            <div className="space-y-6 animate-fade-in-delayed">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="h-px bg-gray-200 flex-1"></div>
-                <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">Sugerencias Inteligentes</span>
-                <div className="h-px bg-gray-200 flex-1"></div>
-              </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                <div className="space-y-3">
-                  <h3 className="text-sm font-medium text-gray-500 ml-1">Paciente Relacionado</h3>
-                  <PatientCard data={MOCK_PATIENT} />
-                </div>
-                <div className="space-y-3">
-                  <h3 className="text-sm font-medium text-gray-500 ml-1">Evidencia Sugerida</h3>
-                  <EvidenceCard data={MOCK_EVIDENCE} />
-                </div>
-              </div>
-            </div>
           </div>
         );
     }

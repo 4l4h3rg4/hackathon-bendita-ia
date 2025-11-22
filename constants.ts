@@ -1,7 +1,7 @@
-import { 
-  MessageSquare, 
-  Search, 
-  Users, 
+import {
+  MessageSquare,
+  Search,
+  Users,
   FileOutput
 } from 'lucide-react';
 import { NavItem, Evidence, Patient, DataRow } from './types';
@@ -9,7 +9,7 @@ import { NavItem, Evidence, Patient, DataRow } from './types';
 export const NAV_ITEMS: NavItem[] = [
   { id: 'chat', label: 'Inicio / Chat', icon: MessageSquare },
   { id: 'evidence', label: 'Explorador de Evidencia', icon: Search },
-  { id: 'patients', label: 'Pacientes (SIC)', icon: Users },
+
   { id: 'export', label: 'Exportar Data', icon: FileOutput },
 ];
 
