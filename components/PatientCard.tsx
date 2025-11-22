@@ -9,24 +9,24 @@ interface PatientCardProps {
 export const PatientCard: React.FC<PatientCardProps> = ({ data }) => {
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300">
-      <div className="flex items-start justify-between mb-4">
+      <div className="flex flex-col sm:flex-row items-start justify-between mb-4 gap-4 sm:gap-0">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-400">
+          <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 shrink-0">
             <User className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+            <h3 className="text-lg font-bold text-gray-900 flex flex-wrap items-center gap-2">
               {data.name}
-              <span className="text-xs font-normal text-gray-400 px-2 py-0.5 bg-gray-100 rounded-md">
+              <span className="text-xs font-normal text-gray-400 px-2 py-0.5 bg-gray-100 rounded-md whitespace-nowrap">
                 ID: {data.id}
               </span>
             </h3>
             <p className="text-sm text-gray-500">{data.diagnosis}</p>
           </div>
         </div>
-        
+
         {/* Adherence Gauge (Visual approximation) */}
-        <div className="text-right">
+        <div className="text-left sm:text-right w-full sm:w-auto pl-14 sm:pl-0">
           <div className="text-xs text-gray-400 mb-1">Adherencia</div>
           <div className={`text-lg font-bold ${data.adherenceRate < 50 ? 'text-teleton-red' : 'text-green-600'}`}>
             {data.adherenceRate}%
@@ -62,11 +62,11 @@ export const PatientCard: React.FC<PatientCardProps> = ({ data }) => {
         </div>
       </div>
 
-      <div className="mt-5 pt-4 border-t border-gray-50 flex justify-end">
-        <button className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
+      <div className="mt-5 pt-4 border-t border-gray-50 flex flex-col sm:flex-row justify-end gap-2">
+        <button className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
           Ver Historia Clínica
         </button>
-        <button className="ml-2 px-4 py-2 text-sm font-medium text-white bg-teleton-red hover:bg-teleton-redHover rounded-lg transition-colors shadow-sm shadow-red-200">
+        <button className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-white bg-teleton-red hover:bg-teleton-redHover rounded-lg transition-colors shadow-sm shadow-red-200">
           Contactar Familia
         </button>
       </div>

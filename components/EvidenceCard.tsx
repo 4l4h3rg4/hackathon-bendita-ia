@@ -13,7 +13,7 @@ export const EvidenceCard: React.FC<EvidenceCardProps> = ({ data }) => {
       <div className="absolute top-0 left-0 w-1 h-full bg-tech-blue" />
 
       <div className="flex flex-col gap-4">
-        <div className="flex justify-between items-start">
+        <div className="flex flex-col sm:flex-row justify-between items-start gap-2 sm:gap-0">
           <div className="flex gap-2 flex-wrap">
             {/* Badge 1: Evidence Level */}
             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-tech-blue border border-blue-100">
@@ -21,16 +21,15 @@ export const EvidenceCard: React.FC<EvidenceCardProps> = ({ data }) => {
               {data.type}
             </span>
             {/* Badge 2: Relevance */}
-            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-              data.relevance === 'Alta' 
-                ? 'bg-green-50 text-emerald-700 border-emerald-100' 
+            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${data.relevance === 'Alta'
+                ? 'bg-green-50 text-emerald-700 border-emerald-100'
                 : 'bg-gray-50 text-gray-600 border-gray-200'
-            }`}>
+              }`}>
               <Star className="w-3 h-3 mr-1" />
               Relevancia: {data.relevance}
             </span>
           </div>
-          <span className="text-gray-400 text-xs flex items-center">
+          <span className="text-gray-400 text-xs flex items-center shrink-0">
             <Calendar className="w-3 h-3 mr-1" />
             {data.year}
           </span>
