@@ -4,6 +4,7 @@ import { Auth } from './components/Auth';
 import { EvidenceCard } from './components/EvidenceCard';
 import { PatientCard } from './components/PatientCard';
 import { AnonymizationPanel } from './components/AnonymizationPanel';
+import { ChatSection } from './components/ChatSection';
 import { MOCK_EVIDENCE, MOCK_PATIENT, MOCK_ANONYMIZATION } from './constants';
 import { Sparkles, ArrowRight } from 'lucide-react';
 
@@ -44,7 +45,12 @@ const App: React.FC = () => {
           </div>
         );
 
-
+      case 'doctor-chat':
+        return (
+          <div className="max-w-6xl mx-auto h-full">
+            <ChatSection />
+          </div>
+        );
 
       default: // 'chat' / Home
         return (
