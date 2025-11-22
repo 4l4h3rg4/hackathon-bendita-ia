@@ -5,13 +5,25 @@ import { EvidenceCard } from './components/EvidenceCard';
 import { PatientCard } from './components/PatientCard';
 import { AnonymizationPanel } from './components/AnonymizationPanel';
 import { ChatSection } from './components/ChatSection';
-import { MOCK_EVIDENCE, MOCK_PATIENT, MOCK_ANONYMIZATION } from './constants';
+import { MOCK_PATIENT } from './constants';
 import { Sparkles, ArrowRight } from 'lucide-react';
+
+import { api } from './services/api';
+import { Evidence, DataRow } from './types';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState('chat');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [evidenceData, setEvidenceData] = useState<Evidence | null>(null);
+  const [anonymizationData, setAnonymizationData] = useState<DataRow[]>([]);
+
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      api.getEvidence().then(setEvidenceData).catch(console.error);
+      api.getAnonymizationData().then(setAnonymizationData).catch(console.error);
+    }
+  }, [isAuthenticated]);
 
   if (!isAuthenticated) {
     return <Auth onLogin={() => setIsAuthenticated(true)} />;
@@ -27,7 +39,7 @@ const App: React.FC = () => {
               <h1 className="text-2xl font-bold text-gray-900">Exportar Datos para Investigación</h1>
               <p className="text-gray-500">Gestión de datasets anonimizados para comités de ética y estudios externos.</p>
             </div>
-            <AnonymizationPanel data={MOCK_ANONYMIZATION} />
+            <AnonymizationPanel data={anonymizationData} />
           </div>
         );
 
@@ -39,8 +51,8 @@ const App: React.FC = () => {
               <p className="text-gray-500">Base de conocimiento indexada por IA.</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <EvidenceCard data={MOCK_EVIDENCE} />
-              <EvidenceCard data={{ ...MOCK_EVIDENCE, id: '2', title: 'Terapia Asistida por Videojuegos: Adherencia en Adolescentes', type: 'RCT', relevance: 'Media', year: 2022 }} />
+              {evidenceData && <EvidenceCard data={evidenceData} />}
+              {/* Placeholder for second card if needed, or fetch list */}
             </div>
           </div>
         );

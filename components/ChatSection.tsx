@@ -20,82 +20,47 @@ interface Contact {
     unreadCount: number;
 }
 
-const MOCK_CONTACTS: Contact[] = [
-    {
-        id: '1',
-        name: 'Dra. Ana María Polo',
-        specialty: 'Neurología Infantil',
-        avatar: 'https://i.pravatar.cc/150?u=1',
-        status: 'online',
-        lastMessage: '¿Pudiste revisar el caso de Martín?',
-        lastMessageTime: '10:30 AM',
-        unreadCount: 2,
-    },
-    {
-        id: '2',
-        name: 'Dr. Sebastián Silva',
-        specialty: 'Kinesiología',
-        avatar: 'https://i.pravatar.cc/150?u=2',
-        status: 'busy',
-        lastMessage: 'El paciente respondió bien a la terapia.',
-        lastMessageTime: 'Ayer',
-        unreadCount: 0,
-    },
-    {
-        id: '3',
-        name: 'Dra. Valentina Rojas',
-        specialty: 'Fisiatría',
-        avatar: 'https://i.pravatar.cc/150?u=3',
-        status: 'offline',
-        lastMessage: 'Te envío los informes en un momento.',
-        lastMessageTime: 'Lun',
-        unreadCount: 0,
-    },
-];
-
-const MOCK_MESSAGES: Record<string, Message[]> = {
-    '1': [
-        { id: 'm1', senderId: '1', text: 'Hola Dr. Castillo, ¿cómo estás?', timestamp: '10:00 AM', isMe: false },
-        { id: 'm2', senderId: 'me', text: 'Hola Dra. Polo, todo bien por acá. ¿Qué tal?', timestamp: '10:05 AM', isMe: true },
-        { id: 'm3', senderId: '1', text: 'Quería consultarte sobre el paciente Martín Pérez. He notado una leve mejoría en su marcha.', timestamp: '10:15 AM', isMe: false },
-        { id: 'm4', senderId: '1', text: '¿Pudiste revisar el caso de Martín?', timestamp: '10:30 AM', isMe: false },
-    ],
-    '2': [
-        { id: 'm1', senderId: '2', text: 'Hola, te cuento que la sesión de hoy fue excelente.', timestamp: 'Ayer', isMe: false },
-        { id: 'm2', senderId: '2', text: 'El paciente respondió bien a la terapia.', timestamp: 'Ayer', isMe: false },
-    ],
-    '3': [
-        { id: 'm1', senderId: 'me', text: 'Hola Valentina, necesito los informes de kine.', timestamp: 'Lun', isMe: true },
-        { id: 'm2', senderId: '3', text: 'Te envío los informes en un momento.', timestamp: 'Lun', isMe: false },
-    ]
-};
+import { api } from '../services/api';
 
 export const ChatSection: React.FC = () => {
-    const [selectedContactId, setSelectedContactId] = useState<string | null>(MOCK_CONTACTS[0].id);
+    const [selectedContactId, setSelectedContactId] = useState<string | null>(null);
     const [messageInput, setMessageInput] = useState('');
-    const [messages, setMessages] = useState<Record<string, Message[]>>(MOCK_MESSAGES);
+    const [messages, setMessages] = useState<Record<string, Message[]>>({});
+    const [contacts, setContacts] = useState<Contact[]>([]);
     const [showQr, setShowQr] = useState(false);
 
-    const selectedContact = MOCK_CONTACTS.find(c => c.id === selectedContactId);
+    React.useEffect(() => {
+        api.getContacts().then(data => {
+            setContacts(data);
+            if (data.length > 0) setSelectedContactId(data[0].id);
+        }).catch(console.error);
+    }, []);
+
+    React.useEffect(() => {
+        if (selectedContactId) {
+            api.getMessages(selectedContactId).then(msgs => {
+                setMessages(prev => ({ ...prev, [selectedContactId]: msgs }));
+            }).catch(console.error);
+        }
+    }, [selectedContactId]);
+
+    const selectedContact = contacts.find(c => c.id === selectedContactId);
     const currentMessages = selectedContactId ? (messages[selectedContactId] || []) : [];
 
-    const handleSendMessage = (e?: React.FormEvent) => {
+    const handleSendMessage = async (e?: React.FormEvent) => {
         e?.preventDefault();
         if (!messageInput.trim() || !selectedContactId) return;
 
-        const newMessage: Message = {
-            id: Date.now().toString(),
-            senderId: 'me',
-            text: messageInput,
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            isMe: true,
-        };
-
-        setMessages(prev => ({
-            ...prev,
-            [selectedContactId]: [...(prev[selectedContactId] || []), newMessage]
-        }));
-        setMessageInput('');
+        try {
+            const newMessage = await api.sendMessage(selectedContactId, messageInput);
+            setMessages(prev => ({
+                ...prev,
+                [selectedContactId]: [...(prev[selectedContactId] || []), newMessage]
+            }));
+            setMessageInput('');
+        } catch (error) {
+            console.error('Failed to send message:', error);
+        }
     };
 
     return (
@@ -124,7 +89,7 @@ export const ChatSection: React.FC = () => {
                 </div>
 
                 <div className="flex-1 overflow-y-auto">
-                    {MOCK_CONTACTS.map(contact => (
+                    {contacts.map(contact => (
                         <button
                             key={contact.id}
                             onClick={() => setSelectedContactId(contact.id)}

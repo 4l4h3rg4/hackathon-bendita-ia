@@ -10,11 +10,41 @@ View your app in AI Studio: https://ai.studio/apps/drive/1WFWhwnRxuqTqrXoBQ6aJIz
 
 ## Run Locally
 
-**Prerequisites:**  Node.js
+### Prerequisites
+- Node.js & pnpm
+- Python 3.8+
+- Supabase Account (or local instance)
 
+### 1. Backend Setup
+The backend is a FastAPI application using Supabase.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+```bash
+cd backend
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the server
+uvicorn app.main:app --reload
+```
+*The backend runs on http://localhost:8000*
+
+### 2. Frontend Setup
+The frontend is a React + Vite application.
+
+```bash
+# (In the project root)
+# Install dependencies
+pnpm install
+
+# Run the development server
+pnpm dev
+```
+*The frontend runs on http://localhost:5173*
+
+### 3. Database Setup
+The project uses Supabase. The database connection is configured in `backend/.env`.
+To seed the database with initial data:
+```bash
+cd backend
+python3 -m app.seed
+```
