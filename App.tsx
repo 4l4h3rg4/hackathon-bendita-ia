@@ -5,8 +5,9 @@ import { EvidenceCard } from './components/EvidenceCard';
 import { PatientCard } from './components/PatientCard';
 import { AnonymizationPanel } from './components/AnonymizationPanel';
 import { ChatSection } from './components/ChatSection';
+import { AIChatInterface } from './components/AIChatInterface';
 import { MOCK_PATIENT } from './constants';
-import { Sparkles, ArrowRight } from 'lucide-react';
+import { Sparkles, ArrowRight, Mic } from 'lucide-react';
 
 import { api } from './services/api';
 import { Evidence, DataRow } from './types';

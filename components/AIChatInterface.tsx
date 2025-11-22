@@ -20,6 +20,7 @@ export const AIChatInterface: React.FC<AIChatInterfaceProps> = ({ initialMessage
     const [showPdfPreview, setShowPdfPreview] = useState(false);
     const [showConsentModal, setShowConsentModal] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    const [hasInitialized, setHasInitialized] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = () => {
@@ -31,15 +32,17 @@ export const AIChatInterface: React.FC<AIChatInterfaceProps> = ({ initialMessage
     }, [messages, isTyping]);
 
     useEffect(() => {
-        if (initialMessage) {
+        // Prevent double execution in React StrictMode
+        if (initialMessage && !hasInitialized) {
+            setHasInitialized(true);
             addMessage(initialMessage, 'user');
-            simulateAIResponse();
+            getAIResponse(initialMessage);
         }
     }, []);
 
     const addMessage = (text: string, sender: 'user' | 'ai', hasAction = false) => {
         const newMessage: Message = {
-            id: Date.now().toString(),
+            id: Date.now().toString() + Math.random(),
             text,
             sender,
             timestamp: new Date(),
@@ -48,25 +51,45 @@ export const AIChatInterface: React.FC<AIChatInterfaceProps> = ({ initialMessage
         setMessages((prev) => [...prev, newMessage]);
     };
 
-    const simulateAIResponse = () => {
+    const getAIResponse = async (userMessage: string) => {
         setIsTyping(true);
-        setTimeout(() => {
+        try {
+            const response = await fetch('http://localhost:8000/api/ai/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: userMessage,
+                    context: 'Contexto médico de Teletón Chile'
+                }),
+            });
+
+            const data = await response.json();
+            setIsTyping(false);
+
+            // Check if response mentions generating a report
+            const hasReportAction = data.response.toLowerCase().includes('pdf') ||
+                data.response.toLowerCase().includes('reporte');
+
+            addMessage(data.response, 'ai', hasReportAction);
+        } catch (error) {
             setIsTyping(false);
             addMessage(
-                'Entiendo, Dr. Castillo. He analizado la solicitud. Aquí tiene un resumen preliminar de los datos. ¿Desea que genere un reporte detallado en PDF?',
-                'ai',
-                true
+                'Lo siento, estoy experimentando problemas de conexión. Por favor, intente nuevamente.',
+                'ai'
             );
-        }, 2000);
+        }
     };
 
     const handleSendMessage = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!inputValue.trim()) return;
+        if (!inputValue.trim() || isTyping) return;
 
-        addMessage(inputValue, 'user');
+        const message = inputValue;
+        addMessage(message, 'user');
         setInputValue('');
-        simulateAIResponse();
+        getAIResponse(message);
     };
 
     const handleGeneratePDF = () => {
