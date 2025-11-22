@@ -2,11 +2,6 @@ fastapi
 uvicorn
 pydantic
 python-multipart
-websockets
-langchain
-langchain-community
-chromadb
-sentence-transformers
-numpy
 python-dotenv
 supabase
+google-generativeai

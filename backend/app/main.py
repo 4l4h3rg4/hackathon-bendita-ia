@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
-from app.routers import auth, evidence, patients, anonymization, chat, intelligence, flash
+from app.routers import auth, evidence, patients, anonymization, chat, intelligence, flash, ai_chat
 
 # Load .env.local if it exists, otherwise .env
 if os.path.exists(".env.local"):
@@ -29,6 +29,7 @@ app.include_router(anonymization.router, prefix="/api", tags=["Anonymization"])
 app.include_router(chat.router, prefix="/api", tags=["Chat"])
 app.include_router(intelligence.router, prefix="/api", tags=["Intelligence"])
 app.include_router(flash.router, prefix="/api", tags=["Flash"])
+app.include_router(ai_chat.router, prefix="/api", tags=["AI Chat"])
 
 @app.get("/")
 async def root():
