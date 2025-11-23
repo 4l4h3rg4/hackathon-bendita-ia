@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - /app/__pycache__
+    # Load environment variables from .env file in backend directory if it exists
+    env_file:
+      - ./backend/.env
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  frontend:
+    build:
+      context: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      # Prevent backend directory from being synced if not needed, though harmless
+      # - /app/backend
+    # Load environment variables from .env.local or .env if they exist
+    env_file:
+      - .env.local
+    environment:
+      - CHOKIDAR_USEPOLLING=true # Needed for hot reload on Windows
+    depends_on:
+      - backend
